@@ -146,7 +146,7 @@ def save_record(result, formula):
 
 
 def open_excel():
-    workbook = load_workbook(r'C:\Users\15953\Desktop\简易计算器\A.xlsx')
+    workbook = load_workbook(r'.\A.xlsx')
     sheet1 = workbook['page_1']
     data = []
     for row in sheet1.rows:
