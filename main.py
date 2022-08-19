@@ -1,18 +1,25 @@
 from tkinter import *
+from tkinter import ttk
 import pandas as pd
 from pandas import *
 from numpy import *
 from openpyxl import *
-datalast=read_excel('answer.xlsx')
-datalast=datalast.iloc[:,1:2]
-print (datalast)
-i=[]
+
+datalast = read_excel('answer.xlsx')
+datalast = datalast.iloc[:, 1:3]
+print(datalast)
+result = []  # 储存计算结果
+formula = []  # 储存计算式
+formula_last = []
+result_last = []
+
+
 class Calculator:
     def __init__(self, master):
         self.master = master
         self.master.title("Calculator")
         self.master.resizable(0, 0)  # 设置窗口不可拉伸
-        self.master.geometry('320x420')  # 设置主窗口的初始尺寸
+        self.master.geometry('800x420')  # 设置主窗口的初始尺寸
 
         self.result = StringVar()  # 用于显示结果的可变文本
         self.equation = StringVar()  # 显示计算方程
@@ -80,6 +87,19 @@ class Calculator:
         self.button_dot.place(x='170', y='370', width='60', height='40')
         self.button_eq.place(x='250', y='370', width='60', height='40')
 
+        # 查询表格
+        columns = ("计算式", "结果")
+        self.master = ttk.Treeview(self.master, height=18, show="headings", columns=columns)  # 表格
+        self.master.column("计算式", width=250, anchor='center')  # 表示列,不显示
+        self.master.column("结果", width=100, anchor='center')
+        self.master.heading("计算式", text="计算式")  # 显示表头
+        self.master.heading("结果", text="结果")
+        self.master.pack(side=LEFT, fill=BOTH)
+        self.master.place(x='400', y='10', width='350', height='400')  # 表格位置
+        display_now(formula_last, result_last)
+        for k in range(min(len(formula_last), len(result_last))):  # 写入数据
+            self.master.insert('', k, values=(formula_last[k], result_last[k]))
+
     def back(self):
         temp_equ = self.equation.get()
         self.equation.set(temp_equ[:-1])  # 一个一个删
@@ -103,7 +123,8 @@ class Calculator:
     def clear(self):
         self.equation.set('0')
         self.result.set(' ')
-
+    temp_equ = ''
+    answer = ''
     def run(self):
         temp_equ = self.equation.get()
         temp_equ = temp_equ.replace('÷', '/')
@@ -112,13 +133,37 @@ class Calculator:
             print(temp_equ)
         try:
             answer = '%.4f' % eval(temp_equ)  # 保留两位小数
+            formula.append(temp_equ)
+            formula_last.append(temp_equ)
             self.result.set(str(answer))
-            i.append(answer)
-            df=pd.DataFrame({"历史记录":i})
+            result.append(answer)
+            result_last.append(answer)
+            df = pd.DataFrame({"计算式": formula, "结果": result})
             print(df)
-            df.to_excel('D:/end1/answer.xlsx')
+            df.to_excel(r'.\answer.xlsx')
         except (ZeroDivisionError, SyntaxError):  # 其他除0错误，或语法错误返回Error
             self.result.set(str('Error'))
+
+
+def display_last():
+    workbook = load_workbook(r'.\answer.xlsx')
+    sheet1 = workbook['Sheet1']
+    i = 2
+    while str(sheet1.cell(row=i, column=2).value) != 'None':
+        formula_last.append(str(sheet1.cell(row=i, column=2).value))
+        i += 1
+    j = 2
+    while str(sheet1.cell(row=j, column=3).value) != 'None':
+        result_last.append(str(sheet1.cell(row=j, column=3).value))
+        j += 1
+
+
+
+def display_now(formula_last_l, result_last_l):
+    display_last()
+    return formula_last_l + formula
+    return result_last_l + result
+
 
 if __name__ == "__main__":
     root = Tk()
