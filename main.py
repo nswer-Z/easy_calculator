@@ -17,9 +17,9 @@ class Calculator:
 
         self.result = StringVar()  # 用于显示结果的可变文本
         self.equation = StringVar()  # 显示计算方程
-        self.label_text = StringVar()#
-        self.result.set(' ')#
-        self.equation.set('0')
+        self.label_text = StringVar()# 计算历史区域文本
+        self.result.set(' ')# 初始结果区域显示空白
+        self.equation.set('0')# 初始计算区域显示0
         self.entry_text = StringVar()
         self.label_text.set(datalast)
         # 显示框
@@ -60,33 +60,33 @@ class Calculator:
         self.button_eq = Button(self.master, text='=', bg='DarkGray', command=self.run)  # =
 
         # Layout布局
-        self.show_result_eq.place(x='10', y='10', width='300', height='50')
-        self.show_result.place(x='10', y='60', width='300', height='50')
-        self.show_result_history.place(x='350',y='10',width='300',height='400')# 显示历史的区域
+        self.show_result_eq.place(x='10', y='10', width='300', height='50')# 输入区域
+        self.show_result.place(x='10', y='60', width='300', height='50')# 显示答案区域
+        self.show_result_history.place(x='350',y='10',width='300',height='400')# 显示计算历史的区域
 
-        self.button_back.place(x='10', y='150', width='60', height='40')
-        self.button_lbracket.place(x='90', y='150', width='60', height='40')
-        self.button_rbracket.place(x='170', y='150', width='60', height='40')
-        self.button_division.place(x='250', y='150', width='60', height='40')
-        self.button_7.place(x='10', y='205', width='60', height='40')
-        self.button_8.place(x='90', y='205', width='60', height='40')
-        self.button_9.place(x='170', y='205', width='60', height='40')
-        self.button_multiplication.place(x='250', y='205', width='60', height='40')
+        self.button_back.place(x='10', y='150', width='60', height='40')# 删除按钮的布局
+        self.button_lbracket.place(x='90', y='150', width='60', height='40')# 左括号位置
+        self.button_rbracket.place(x='170', y='150', width='60', height='40')# 右括号位置
+        self.button_division.place(x='250', y='150', width='60', height='40')# 除号的位置
+        self.button_7.place(x='10', y='205', width='60', height='40')# 按键7位置
+        self.button_8.place(x='90', y='205', width='60', height='40')# 按键8位置
+        self.button_9.place(x='170', y='205', width='60', height='40')# 按键9位置
+        self.button_multiplication.place(x='250', y='205', width='60', height='40')# 按键乘号*位置
 
-        self.button_4.place(x='10', y='260', width='60', height='40')
-        self.button_5.place(x='90', y='260', width='60', height='40')
-        self.button_6.place(x='170', y='260', width='60', height='40')
-        self.button_minus.place(x='250', y='260', width='60', height='40')
+        self.button_4.place(x='10', y='260', width='60', height='40')# 按键4位置
+        self.button_5.place(x='90', y='260', width='60', height='40')# 按键5位置
+        self.button_6.place(x='170', y='260', width='60', height='40')# 按键6位置
+        self.button_minus.place(x='250', y='260', width='60', height='40')# 按键-位置
 
-        self.button_1.place(x='10', y='315', width='60', height='40')
-        self.button_2.place(x='90', y='315', width='60', height='40')
-        self.button_3.place(x='170', y='315', width='60', height='40')
-        self.button_plus.place(x='250', y='315', width='60', height='40')
+        self.button_1.place(x='10', y='315', width='60', height='40')# 按键1位置
+        self.button_2.place(x='90', y='315', width='60', height='40')# 按键2位置
+        self.button_3.place(x='170', y='315', width='60', height='40')# 按键3位置
+        self.button_plus.place(x='250', y='315', width='60', height='40')# 按键加号+位置
 
-        self.button_MC.place(x='10', y='370', width='60', height='40')
-        self.button_0.place(x='90', y='370', width='60', height='40')
-        self.button_dot.place(x='170', y='370', width='60', height='40')
-        self.button_eq.place(x='250', y='370', width='60', height='40')
+        self.button_MC.place(x='10', y='370', width='60', height='40')# 按键清零MC位置
+        self.button_0.place(x='90', y='370', width='60', height='40')# 按键0位置
+        self.button_dot.place(x='170', y='370', width='60', height='40')# 按键小数点.位置
+        self.button_eq.place(x='250', y='370', width='60', height='40')# 按键=位置
 
     def back(self):
         temp_equ = self.equation.get()
