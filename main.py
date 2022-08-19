@@ -1,4 +1,5 @@
 from tkinter import *
+from turtle import back
 import pandas as pd
 from pandas import *
 from numpy import *
@@ -12,12 +13,15 @@ class Calculator:
         self.master = master
         self.master.title("Calculator")
         self.master.resizable(0, 0)  # 设置窗口不可拉伸
-        self.master.geometry('320x420')  # 设置主窗口的初始尺寸
+        self.master.geometry('720x420')  # 设置主窗口的初始尺寸
 
         self.result = StringVar()  # 用于显示结果的可变文本
         self.equation = StringVar()  # 显示计算方程
+        self.label_text = StringVar()
         self.result.set(' ')
         self.equation.set('0')
+        self.entry_text = StringVar()
+        self.label_text.set(datalast)
         # 显示框
         self.show_result_eq = Label(self.master, bg='white', fg='black',
                                     font=('Arail', '16'), bd='0',
@@ -25,6 +29,9 @@ class Calculator:
         self.show_result = Label(self.master, bg='white', fg='black',
                                  font=('Arail', '20'), bd='0',
                                  textvariable=self.result, anchor='se')
+        self.show_result_history = Label(self.master, bg='white', fg='black',
+                                 font=('Arail', '20'), bd='0',
+                                 textvariable=self.label_text, anchor='se')
         # 按钮
         self.button_back = Button(self.master, text='<-', bg='DarkGray', command=self.back)  # 返回
         self.button_lbracket = Button(self.master, text='(', bg='DarkGray', command=lambda: self.getNum('('))  # 左括号
@@ -55,6 +62,7 @@ class Calculator:
         # Layout布局
         self.show_result_eq.place(x='10', y='10', width='300', height='50')
         self.show_result.place(x='10', y='60', width='300', height='50')
+        self.show_result_history.place(x='350',y='10',width='300',height='400')
 
         self.button_back.place(x='10', y='150', width='60', height='40')
         self.button_lbracket.place(x='90', y='150', width='60', height='40')
@@ -116,6 +124,7 @@ class Calculator:
             i.append(answer)
             df=pd.DataFrame({"历史记录":i})
             print(df)
+            self.label_text.set(df)
             df.to_excel('D:/end2/answer.xlsx')
         except (ZeroDivisionError, SyntaxError):  # 其他除0错误，或语法错误返回Error
             self.result.set(str('Error'))
