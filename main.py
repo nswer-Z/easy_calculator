@@ -17,8 +17,8 @@ class Calculator:
 
         self.result = StringVar()  # 用于显示结果的可变文本
         self.equation = StringVar()  # 显示计算方程
-        self.label_text = StringVar()
-        self.result.set(' ')
+        self.label_text = StringVar()#
+        self.result.set(' ')#
         self.equation.set('0')
         self.entry_text = StringVar()
         self.label_text.set(datalast)
@@ -62,7 +62,7 @@ class Calculator:
         # Layout布局
         self.show_result_eq.place(x='10', y='10', width='300', height='50')
         self.show_result.place(x='10', y='60', width='300', height='50')
-        self.show_result_history.place(x='350',y='10',width='300',height='400')
+        self.show_result_history.place(x='350',y='10',width='300',height='400')# 显示历史的区域
 
         self.button_back.place(x='10', y='150', width='60', height='40')
         self.button_lbracket.place(x='90', y='150', width='60', height='40')
