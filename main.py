@@ -91,7 +91,7 @@ class Calculator:
         self.button_plus.place(x='250', y='315', width='60', height='40')
 
         self.button_MC.place(x='10', y='370', width='60', height='40')
-        self.button_0.place(x='90', y='370', width='60', height='40')
+        self.button_0.place(x='90', y='370', width='60', height='40')# 0的位置
         self.button_dot.place(x='170', y='370', width='60', height='40')
         self.button_eq.place(x='250', y='370', width='60', height='40')
 
