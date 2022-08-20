@@ -5,21 +5,43 @@ from pandas import *
 from numpy import *
 from openpyxl import *
 
-datalast = read_excel('answer.xlsx')
-datalast = datalast.iloc[:, 1:3]
-print(datalast)
+# datalast = read_excel('answer.xlsx')
+# datalast = datalast.iloc[:, 1:3]
+# print(datalast)
 result = []  # 储存计算结果
 formula = []  # 储存计算式
+# 初次赋值上次运行历史记录，之后变为上次运行历史+本次运行历史
 formula_last = []
 result_last = []
 
 
+class Empty:
+    def get_children(self):
+        return [0]
+
+    def delete(self, m):
+        pass
+
+    def insert(self, a, s, values):
+        pass
+
+
+sm = Empty()
+
+
 class Calculator:
+
     def __init__(self, master):
         self.master = master
         self.master.title("Calculator")
         self.master.resizable(0, 0)  # 设置窗口不可拉伸
-        self.master.geometry('800x420')  # 设置主窗口的初始尺寸
+
+        # 主窗体居中屏幕
+        screenwidth = self.master.winfo_screenwidth()
+        screenheight = self.master.winfo_screenheight()
+        size = '%dx%d+%d+%d' % (800, 420, (screenwidth - 800) / 2, (screenheight - 420) / 2)
+        self.master.geometry(size)  # 设置主窗口的初始尺寸 宽800，高420
+        self.master.update()
 
         self.result = StringVar()  # 用于显示结果的可变文本
         self.equation = StringVar()  # 显示计算方程
@@ -88,15 +110,23 @@ class Calculator:
         self.button_eq.place(x='250', y='370', width='60', height='40')
 
         # 查询表格
-        columns = ("计算式", "结果")
+        columns = ("结果", "计算式")
         self.master = ttk.Treeview(self.master, height=18, show="headings", columns=columns)  # 表格
-        self.master.column("计算式", width=250, anchor='center')  # 表示列,不显示
-        self.master.column("结果", width=100, anchor='center')
-        self.master.heading("计算式", text="计算式")  # 显示表头
-        self.master.heading("结果", text="结果")
-        self.master.pack(side=LEFT, fill=BOTH)
-        self.master.place(x='400', y='10', width='350', height='400')  # 表格位置
-        display_now(formula_last, result_last)
+        global sm
+        sm = self.master
+        self.master.column("结果", minwidth=150, anchor='w')  # 表示列,不显示
+        self.master.column("计算式", width=500, anchor='w')
+        self.master.heading("结果", text="结果", anchor='w')  # 显示表头
+        self.master.heading("计算式", text="计算式", anchor='w')
+        self.master.pack(side=RIGHT, fill=BOTH)
+        self.master.place(x='350', y='10', width='400', height='400')  # 表格位置
+        # 水平滚轮
+        self.VScroll2 = Scrollbar(self.master, orient='horizontal', command=self.master.xview)
+        self.VScroll2.place(relx=0.000, rely=0.954, relwidth=1.000, relheight=0.046)
+        self.master.configure(xscrollcommand=self.VScroll2.set)
+
+        # 显示上一次运行程序的计算历史
+        self.display_last()
         for k in range(min(len(formula_last), len(result_last))):  # 写入数据
             self.master.insert('', k, values=(formula_last[k], result_last[k]))
 
@@ -123,8 +153,10 @@ class Calculator:
     def clear(self):
         self.equation.set('0')
         self.result.set(' ')
+
     temp_equ = ''
     answer = ''
+
     def run(self):
         temp_equ = self.equation.get()
         temp_equ = temp_equ.replace('÷', '/')
@@ -138,31 +170,32 @@ class Calculator:
             self.result.set(str(answer))
             result.append(answer)
             result_last.append(answer)
+            print(result_last)
+            print(formula_last)
+            # 清除上次显示
+            x = sm.get_children()
+            for item in x:
+                sm.delete(item)
+            # 刷新本次显示，相对上次显示增加本次计算式和结果
+            for k in range(min(len(formula_last), len(result_last))):  # 写入数据
+                sm.insert('', k, values=(formula_last[k], result_last[k]))
             df = pd.DataFrame({"计算式": formula, "结果": result})
             print(df)
             df.to_excel(r'.\answer.xlsx')
         except (ZeroDivisionError, SyntaxError):  # 其他除0错误，或语法错误返回Error
             self.result.set(str('Error'))
 
-
-def display_last():
-    workbook = load_workbook(r'.\answer.xlsx')
-    sheet1 = workbook['Sheet1']
-    i = 2
-    while str(sheet1.cell(row=i, column=2).value) != 'None':
-        formula_last.append(str(sheet1.cell(row=i, column=2).value))
-        i += 1
-    j = 2
-    while str(sheet1.cell(row=j, column=3).value) != 'None':
-        result_last.append(str(sheet1.cell(row=j, column=3).value))
-        j += 1
-
-
-
-def display_now(formula_last_l, result_last_l):
-    display_last()
-    return formula_last_l + formula
-    return result_last_l + result
+    def display_last(self):
+        self.workbook = load_workbook(r'.\answer.xlsx')
+        sheet1 = self.workbook['Sheet1']
+        i = 2
+        while str(sheet1.cell(row=i, column=2).value) != 'None':
+            formula_last.append(str(sheet1.cell(row=i, column=2).value))
+            i += 1
+        j = 2
+        while str(sheet1.cell(row=j, column=3).value) != 'None':
+            result_last.append(str(sheet1.cell(row=j, column=3).value))
+            j += 1
 
 
 if __name__ == "__main__":
