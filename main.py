@@ -41,70 +41,73 @@ class Calculator:
                                  font=('Arail', '20'), bd='0',
                                  textvariable=self.result, anchor='se')
         # 按钮
+        # 第一行按钮 'back'、'('、')'、'÷'
         self.button_back = Button(self.master, text='<-', bg='DarkGray', command=self.back)  # 返回
         self.button_lbracket = Button(self.master, text='(', bg='DarkGray', command=lambda: self.getNum('('))  # 左括号
         self.button_rbracket = Button(self.master, text=')', bg='DarkGray', command=lambda: self.getNum(')'))  # 左括号
         self.button_division = Button(self.master, text='÷', bg='DarkGray', command=lambda: self.getNum('÷'))  # 除号
-        # 7 8 9 4 5 6 1 2 3
+        # 第二行按钮 '7'、'8'、'9'、'*'
         self.button_7 = Button(self.master, text='7', bg='DarkGray', command=lambda: self.getNum('7'))  # 7号
         self.button_8 = Button(self.master, text='8', bg='DarkGray', command=lambda: self.getNum('8'))  # 8号
         self.button_9 = Button(self.master, text='9', bg='DarkGray', command=lambda: self.getNum('9'))  # 9号
         self.button_multiplication = Button(self.master, text='*', bg='DarkGray',
                                             command=lambda: self.getNum('*'))  # 乘号
-        # 按钮的command参数,是回调函数。lambda函数是为了可以传参数给回调函数
+        # 第三行按钮 '4'、'5'、'6'、'-'
         self.button_4 = Button(self.master, text='4', bg='DarkGray', command=lambda: self.getNum('4'))  # 4号
         self.button_5 = Button(self.master, text='5', bg='DarkGray', command=lambda: self.getNum('5'))  # 5号
         self.button_6 = Button(self.master, text='6', bg='DarkGray', command=lambda: self.getNum('6'))  # 6号
         self.button_minus = Button(self.master, text='-', bg='DarkGray', command=lambda: self.getNum('-'))  # -号
-
+        # 第四行按钮 '1'、'2'、'3'、'+'
         self.button_1 = Button(self.master, text='1', bg='DarkGray', command=lambda: self.getNum('1'))  # 1号
         self.button_2 = Button(self.master, text='2', bg='DarkGray', command=lambda: self.getNum('2'))  # 2号
         self.button_3 = Button(self.master, text='3', bg='DarkGray', command=lambda: self.getNum('3'))  # 3号
         self.button_plus = Button(self.master, text='+', bg='DarkGray', command=lambda: self.getNum('+'))  # +号
-        # 控制按钮 0 .
+        # 第五行按钮 'MC'、'0'、'.'、'='
         self.button_MC = Button(self.master, text='MC', bg='DarkGray', command=self.clear)  # MC
         self.button_0 = Button(self.master, text='0', bg='DarkGray', command=lambda: self.getNum('0'))  # 0
         self.button_dot = Button(self.master, text='.', bg='DarkGray', command=lambda: self.getNum('.'))  # .
         self.button_eq = Button(self.master, text='=', bg='DarkGray', command=self.run)  # =
 
-        # Layout布局
-        self.show_result_eq.place(x='10', y='10', width='300', height='50')#
+        # 按钮属性设置，包括位置、大小
+        # 结果和计算式标签
+        self.show_result_eq.place(x='10', y='10', width='300', height='50')
         self.show_result.place(x='10', y='60', width='300', height='50')
-
+        # 第一行按钮 'back'、'('、')'、'÷'
         self.button_back.place(x='10', y='150', width='60', height='40')
         self.button_lbracket.place(x='90', y='150', width='60', height='40')
         self.button_rbracket.place(x='170', y='150', width='60', height='40')
         self.button_division.place(x='250', y='150', width='60', height='40')
+        # 第二行按钮 '7'、'8'、'9'、'*'
         self.button_7.place(x='10', y='205', width='60', height='40')
         self.button_8.place(x='90', y='205', width='60', height='40')
         self.button_9.place(x='170', y='205', width='60', height='40')
         self.button_multiplication.place(x='250', y='205', width='60', height='40')
-
+        # 第三行按钮 '4'、'5'、'6'、'-'
         self.button_4.place(x='10', y='260', width='60', height='40')
         self.button_5.place(x='90', y='260', width='60', height='40')
         self.button_6.place(x='170', y='260', width='60', height='40')
         self.button_minus.place(x='250', y='260', width='60', height='40')
-
+        # 第四行按钮 '1'、'2'、'3'、'+'
         self.button_1.place(x='10', y='315', width='60', height='40')
         self.button_2.place(x='90', y='315', width='60', height='40')
         self.button_3.place(x='170', y='315', width='60', height='40')
         self.button_plus.place(x='250', y='315', width='60', height='40')
-
+        # 第五行按钮 'MC'、'0'、'.'、'='
         self.button_MC.place(x='10', y='370', width='60', height='40')
-        self.button_0.place(x='90', y='370', width='60', height='40')# 0的位置
+        self.button_0.place(x='90', y='370', width='60', height='40')
         self.button_dot.place(x='170', y='370', width='60', height='40')
         self.button_eq.place(x='250', y='370', width='60', height='40')
 
-        # 查询表格
+        # 历史记录表格
         columns = ("结果", "计算式")
         self.master = ttk.Treeview(self.master, height=18, show="headings", columns=columns)  # 表格
-        self.master.column("结果", width=150, anchor='w')  # 表示列,不显示
+        self.master.column("结果", width=150, anchor='w')  # 表格列设置
         self.master.column("计算式", width=500, anchor='w')
-        self.master.heading("结果", text="结果", anchor='w', )  # 显示表头
+        self.master.heading("结果", text="结果", anchor='w', )  # 表头设置
         self.master.heading("计算式", text="计算式", anchor='w')
         self.master.pack(side=RIGHT, fill=BOTH)
         self.master.place(x='350', y='10', width='400', height='400')  # 表格位置
-        # 水平滚轮
+        # 底部水平滚轮
         self.VScroll2 = Scrollbar(self.master, orient='horizontal', command=self.master.xview)
         self.VScroll2.place(relx=0.000, rely=0.954, relwidth=1.000, relheight=0.046)
         self.master.configure(xscrollcommand=self.VScroll2.set)
@@ -112,7 +115,7 @@ class Calculator:
         # 显示上一次运行程序的计算历史
         self.display_last()
         for k in range(min(len(formula_last), len(result_last))):  # 写入数据
-            self.master.insert('', k, values=(formula_last[k], result_last[k]))
+            self.master.insert('', k, values=(result_last[k], formula_last[k]))
 
     def back(self):
         temp_equ = self.equation.get()
@@ -129,6 +132,17 @@ class Calculator:
         temp_result = self.result.get()
 
         # 判断基本语法错误
+        if (temp_equ[-1] in ['+', '-', '*', '÷', '(']) and (arg in ['+', '-', '*', '÷', ')']):  # 不符合四则运算的运算符号连接
+            arg = ''
+        if (arg == ')') and ('(' not in temp_equ):  # 必须有左括号才能输右括号
+            arg = ''
+        if arg == ')':
+            lbracket_num = temp_equ.count('(')
+            rbracket_num = temp_equ.count(')')
+            if rbracket_num == lbracket_num:  # 左右括号的数量必须相等
+                arg = ''
+        if (temp_equ[-1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']) and arg == '(':  # 不能实现点乘
+            arg = ''
         if temp_result != ' ':  # 计算器输入前还没有结果，那么结果区域应该设置为空。
             self.result.set(' ')
         if temp_equ == '0' and (arg not in ['.', '+', '-', '*', '÷']):  # 如果首次输入为0，则紧跟则不能是数字，只是小数点或运算符
@@ -140,6 +154,7 @@ class Calculator:
         temp_equ = temp_equ + arg
         self.equation.set(temp_equ)
 
+    # 计算式和计算结果标签的清零、清空
     def clear(self):
         self.equation.set('0')
         self.result.set(' ')
@@ -155,17 +170,18 @@ class Calculator:
 
     def run(self):
         global b
-        b = True
+        b = True  # 点击'='调用此方法，使得b为True，下次点击按钮通过getNum()方法可以使得计算式标签清零
+
         temp_equ = self.equation.get()
         temp_equ = temp_equ.replace('÷', '/')
         if temp_equ[0] in ['+', '-', '*', '÷']:
             temp_equ = '0' + temp_equ
         try:
-            answer = '%.4f' % eval(temp_equ)  # 保留两位小数
-            formula.append(temp_equ)
-            formula_last.append(temp_equ)
+            answer = '%.4f' % eval(temp_equ)  # 保留四位小数
             self.result.set(str(answer))
+            formula.append(temp_equ)  # 储存本次记录
             result.append(answer)
+            formula_last.append(temp_equ)   # 将本次记录添加至上次历史记录，一起显示
             result_last.append(answer)
             # 清除上次显示
             x = self.master.get_children()
@@ -173,12 +189,14 @@ class Calculator:
                 self.master.delete(item)
             # 写入数据，刷新本次显示，相对上次显示增加本次计算式和结果
             for k in range(min(len(formula_last), len(result_last))):  #
-                self.master.insert('', k, values=(formula_last[k], result_last[k]))
-            df = pd.DataFrame({"计算式": formula, "结果": result})
+                self.master.insert('', k, values=(result_last[k], formula_last[k]))
+            # 将本次记录写入answer.xlsx储存
+            df = pd.DataFrame({"结果": result, "计算式": formula})
             df.to_excel(r'.\answer.xlsx')
         except (ZeroDivisionError, SyntaxError):  # 其他除0错误，或语法错误返回Error
             self.result.set(str('Error'))
 
+    # 读取answer.xlsx中的历史记录
     def display_last(self):
         self.workbook = load_workbook(r'.\answer.xlsx')
         sheet1 = self.workbook['Sheet1']
