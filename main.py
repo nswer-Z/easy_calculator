@@ -68,7 +68,7 @@ class Calculator:
         self.button_eq = Button(self.master, text='=', bg='DarkGray', command=self.run)  # =
 
         # Layout布局
-        self.show_result_eq.place(x='10', y='10', width='300', height='50')
+        self.show_result_eq.place(x='10', y='10', width='300', height='50')#
         self.show_result.place(x='10', y='60', width='300', height='50')
 
         self.button_back.place(x='10', y='150', width='60', height='40')
