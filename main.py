@@ -4,6 +4,7 @@ import pandas as pd
 from pandas import *
 from numpy import *
 from openpyxl import *
+# import math
 
 result = []  # 储存本次运行计算结果
 formula = []  # 储存本次运行计算式
@@ -25,7 +26,7 @@ class Calculator:
         # 主窗体居中屏幕
         screenwidth = self.master.winfo_screenwidth()
         screenheight = self.master.winfo_screenheight()
-        size = '%dx%d+%d+%d' % (760, 420, (screenwidth - 800) / 2, (screenheight - 420) / 2)
+        size = '%dx%d+%d+%d' % (760, 490, (screenwidth - 800) / 2, (screenheight - 420) / 2)
         self.master.geometry(size)  # 设置主窗口的初始尺寸 宽760，高420
         self.master.update()
 
@@ -62,10 +63,15 @@ class Calculator:
         self.button_2 = Button(self.master, text='2', bg='DarkGray', command=lambda: self.getNum('2'))  # 2号
         self.button_3 = Button(self.master, text='3', bg='DarkGray', command=lambda: self.getNum('3'))  # 3号
         self.button_plus = Button(self.master, text='+', bg='DarkGray', command=lambda: self.getNum('+'))  # +号
-        # 第五行按钮 'MC'、'0'、'.'、'='
-        self.button_MC = Button(self.master, text='MC', bg='DarkGray', command=self.clear)  # MC
+        # 第五行按钮 'log'、'0'、'.'、'pi'
+        self.button_log = Button(self.master, text='ln', bg='DarkGray', command=lambda: self.getNum('log'))  # log
         self.button_0 = Button(self.master, text='0', bg='DarkGray', command=lambda: self.getNum('0'))  # 0
         self.button_dot = Button(self.master, text='.', bg='DarkGray', command=lambda: self.getNum('.'))  # .
+        self.button_pi = Button(self.master, text='π', bg='DarkGray', command=lambda: self.getNum('π'))  # pi
+        # 第六行按钮 'MC'、'exp'、'e'、'='
+        self.button_MC = Button(self.master, text='MC', bg='DarkGray', command=self.clear)  # MC
+        self.button_exp = Button(self.master, text='exp', bg='DarkGray', command=lambda: self.getNum('exp'))  # exp
+        self.button_e = Button(self.master, text='e', bg='DarkGray', command=lambda: self.getNum('e'))  # e
         self.button_eq = Button(self.master, text='=', bg='DarkGray', command=self.run)  # =
 
         # 按钮属性设置，包括位置、大小
@@ -92,12 +98,16 @@ class Calculator:
         self.button_2.place(x='90', y='315', width='60', height='40')
         self.button_3.place(x='170', y='315', width='60', height='40')
         self.button_plus.place(x='250', y='315', width='60', height='40')
-        # 第五行按钮 'MC'、'0'、'.'、'='
-        self.button_MC.place(x='10', y='370', width='60', height='40')
+        # 第五行按钮 'log'、'0'、'.'、'pi'
+        self.button_log.place(x='10', y='370', width='60', height='40')
         self.button_0.place(x='90', y='370', width='60', height='40')
         self.button_dot.place(x='170', y='370', width='60', height='40')
-        self.button_eq.place(x='250', y='370', width='60', height='40')
-
+        self.button_pi.place(x='250', y='370', width='60', height='40')
+        # 第六行按钮 'MC'、'exp'、'e'、'='
+        self.button_MC.place(x='10', y='425', width='60', height='40')
+        self.button_exp.place(x='90', y='425', width='60', height='40')
+        self.button_e.place(x='170', y='425', width='60', height='40')
+        self.button_eq.place(x='250', y='425', width='60', height='40')
         # 历史记录表格
         columns = ("结果", "计算式")
         self.master = ttk.Treeview(self.master, height=18, show="headings", columns=columns)  # 表格
@@ -106,7 +116,7 @@ class Calculator:
         self.master.heading("结果", text="结果", anchor='w', )  # 表头设置
         self.master.heading("计算式", text="计算式", anchor='w')
         self.master.pack(side=RIGHT, fill=BOTH)
-        self.master.place(x='350', y='10', width='400', height='400')  # 表格位置
+        self.master.place(x='350', y='10', width='400', height='460')  # 表格位置
         # 底部水平滚轮
         self.VScroll2 = Scrollbar(self.master, orient='horizontal', command=self.master.xview)
         self.VScroll2.place(relx=0.000, rely=0.954, relwidth=1.000, relheight=0.046)
@@ -127,21 +137,36 @@ class Calculator:
         if b:
             self.equation_clear()
             b = False
-
         temp_equ = self.equation.get()  # 输入算式
         temp_result = self.result.get()
+        arg, temp_equ = self.equtionGenerateError(arg, temp_equ, temp_result)
+        temp_equ = temp_equ + arg
+        if arg in ['log', 'exp']:  # math.log()和math.exp()的运算需要加括号，右括号使用者会自行补齐
+            temp_equ = temp_equ + '('
+        self.equation.set(temp_equ)
 
-        # 判断基本语法错误
-        if (temp_equ[-1] in ['+', '-', '*', '÷', '(']) and (arg in ['+', '-', '*', '÷', ')']):  # 不符合四则运算的运算符号连接
+    # 判断基本语法错误
+    def equtionGenerateError(self, arg, temp_equ, temp_result):
+        if (temp_equ == '' or temp_equ == '0') and (arg in ['e', 'π', 'log', 'exp']):  # 第一个输入非数字时被允许的情况
+            pass
+        elif temp_equ == '' or temp_equ == '0' and arg in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '(']:
+            pass
+        elif (temp_equ[-1] in ['exp', 'log', 'π', 'e', '.']) and (arg in ['exp', 'log', 'π', 'e', '.']):
             arg = ''
-        if (arg == ')') and ('(' not in temp_equ):  # 必须有左括号才能输右括号
+        elif (temp_equ[-1] in ['+', '-', '*', '÷', '(']) and (arg in ['+', '-', '*', '÷', ')']):  # 不符合四则运算的运算符号连接
             arg = ''
-        if arg == ')':
+        elif (arg == ')') and ('(' not in temp_equ):  # 必须有左括号才能输右括号
+            arg = ''
+        elif arg == ')':
             lbracket_num = temp_equ.count('(')
             rbracket_num = temp_equ.count(')')
             if rbracket_num == lbracket_num:  # 左右括号的数量必须相等
                 arg = ''
-        if (temp_equ[-1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']) and arg == '(':  # 不能实现点乘
+        elif (temp_equ[-1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'π', 'e']) and (
+                arg in ['(', 'exp', 'log', 'π', 'e']):  # 不能实现点乘
+            arg = ''
+        elif (temp_equ[-1] in ['π', 'e']) and (
+                arg in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'π', 'e']):  # 不能实现点乘
             arg = ''
         if temp_result != ' ':  # 计算器输入前还没有结果，那么结果区域应该设置为空。
             self.result.set(' ')
@@ -151,8 +176,7 @@ class Calculator:
             if (temp_equ[-2] in ['+', '-', '*', '÷']) and (
                     arg in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '(']):
                 temp_equ = temp_equ[:-1]
-        temp_equ = temp_equ + arg
-        self.equation.set(temp_equ)
+        return arg, temp_equ
 
     # 计算式和计算结果标签的清零、清空
     def clear(self):
@@ -173,15 +197,19 @@ class Calculator:
         b = True  # 点击'='调用此方法，使得b为True，下次点击按钮通过getNum()方法可以使得计算式标签清零
 
         temp_equ = self.equation.get()
+        temp_equ = temp_equ.replace('π', 'pi')
         temp_equ = temp_equ.replace('÷', '/')
         if temp_equ[0] in ['+', '-', '*', '÷']:
             temp_equ = '0' + temp_equ
         try:
-            answer = '%.4f' % eval(temp_equ)  # 保留四位小数
+            repr(temp_equ)
+            print(temp_equ)
+            answer = '%.4f' % eval(str(temp_equ))  # 保留四位小数
             self.result.set(str(answer))
+            temp_equ = temp_equ.replace('pi', 'π')
             formula.append(temp_equ)  # 储存本次记录
             result.append(answer)
-            formula_last.append(temp_equ)   # 将本次记录添加至上次历史记录，一起显示
+            formula_last.append(temp_equ)  # 将本次记录添加至上次历史记录，一起显示
             result_last.append(answer)
             # 清除上次显示
             x = self.master.get_children()
@@ -193,7 +221,7 @@ class Calculator:
             # 将本次记录写入answer.xlsx储存
             df = pd.DataFrame({"结果": result, "计算式": formula})
             df.to_excel(r'.\answer.xlsx')
-        except (ZeroDivisionError, SyntaxError):  # 其他除0错误，或语法错误返回Error
+        except:  # 其他除0错误，或语法错误返回Error
             self.result.set(str('Error'))
 
     # 读取answer.xlsx中的历史记录
