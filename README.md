@@ -1,10 +1,32 @@
 # easy_calculator
 
-## 需要安装的包
+## 团队分工
 
-1. tkinter(python内置)  
-2. pandas  
-3. numpy  
-4. openpyxl  
+张财久：历史记录列表设计及其显示功能实现，对一些不合理输入的处理
 
-df.to_excel('D:/end1/answer.xlsx') 将此地址修改为与main.py相同地址即可
+张琰：计算器基础功能按钮、显示标签的设计，计算功能的实现
+
+寇臻辉：检查基础功能的完整性，处理不合理输入的计算式，完善计算功能
+
+许泽广：附加功能设计、实现，优化代码结构
+
+## github仓库地址
+
+``` txt
+https://github.com/nswer-Z/easy_calculator
+```
+
+## 开发工具
+
+### 软件
+
+pycharm
+
+excel
+
+### 需要用到的包
+
+1. tkinter.py
+2. pandas.py
+3. numpy.py
+4. openpyxl.py

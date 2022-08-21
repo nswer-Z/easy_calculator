@@ -4,7 +4,7 @@ import pandas as pd
 from pandas import *
 from numpy import *
 from openpyxl import *
-# import math
+import math
 
 result = []  # 储存本次运行计算结果
 formula = []  # 储存本次运行计算式
@@ -151,9 +151,15 @@ class Calculator:
             pass
         elif temp_equ == '' or temp_equ == '0' and arg in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '(']:
             pass
-        elif (temp_equ[-1] in ['exp', 'log', 'π', 'e', '.']) and (arg in ['exp', 'log', 'π', 'e', '.']):
+        elif (temp_equ[-1] in ['exp', 'log', 'π', 'e', '.']) and (arg in ['exp', 'log', 'π', 'e', '.']):  # 不符合四则运算的运算符号连接
             arg = ''
-        elif (temp_equ[-1] in ['+', '-', '*', '÷', '(']) and (arg in ['+', '-', '*', '÷', ')']):  # 不符合四则运算的运算符号连接
+        elif (temp_equ[-1] in ['+', '-', '*', '÷', '(', '.']) and (arg in ['+', '-', '*', '÷', ')', '.']):
+            arg = ''
+        elif temp_equ[-1] == '.' and arg == '(':
+            arg = ''
+        elif temp_equ[-1] == ')' and arg == '.':
+            arg = ''
+        elif temp_equ[-1] == ')' and arg not in ['+', '-', '*', '÷', ')']:  # ')'后目前只能跟'+', '-', '*', '÷', ')'
             arg = ''
         elif (arg == ')') and ('(' not in temp_equ):  # 必须有左括号才能输右括号
             arg = ''
@@ -166,8 +172,21 @@ class Calculator:
                 arg in ['(', 'exp', 'log', 'π', 'e']):  # 不能实现点乘
             arg = ''
         elif (temp_equ[-1] in ['π', 'e']) and (
-                arg in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'π', 'e']):  # 不能实现点乘
+                arg in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'π', 'e']):
             arg = ''
+        elif len(temp_equ) > 1 and temp_equ[-2] == '(' and temp_equ[-1] == '0' and arg != '.':    # '('后不能跟'0'
+            arg = ''
+        if arg == '.' and temp_equ.count('.') > 0:  # 一个数之中只能有一个小数点
+            i = -1
+            while True:
+                if temp_equ[i] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
+                    i -= 1
+                    continue
+                elif temp_equ[i] == '.':
+                    arg = ''
+                    break
+                else:
+                    break
         if temp_result != ' ':  # 计算器输入前还没有结果，那么结果区域应该设置为空。
             self.result.set(' ')
         if temp_equ == '0' and (arg not in ['.', '+', '-', '*', '÷']):  # 如果首次输入为0，则紧跟则不能是数字，只是小数点或运算符
@@ -202,9 +221,7 @@ class Calculator:
         if temp_equ[0] in ['+', '-', '*', '÷']:
             temp_equ = '0' + temp_equ
         try:
-            repr(temp_equ)
-            print(temp_equ)
-            answer = '%.4f' % eval(str(temp_equ))  # 保留四位小数
+            answer = '%.4f' % eval(temp_equ)  # 保留四位小数
             self.result.set(str(answer))
             temp_equ = temp_equ.replace('pi', 'π')
             formula.append(temp_equ)  # 储存本次记录
