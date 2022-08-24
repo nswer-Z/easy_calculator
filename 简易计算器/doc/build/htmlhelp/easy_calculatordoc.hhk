@@ -1,0 +1,62 @@
+<UL>
+<LI> <OBJECT type="text/sitemap">
+    <param name="Keyword" value="back() （main.Calculator 方法）">
+    <param name="Local" value="main.html#main.Calculator.back">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+    <param name="Keyword" value="Calculator（main 中的类）">
+    <param name="Local" value="main.html#main.Calculator">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+    <param name="Keyword" value="clear() （main.Calculator 方法）">
+    <param name="Local" value="main.html#main.Calculator.clear">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+    <param name="Keyword" value="display_last() （main.Calculator 方法）">
+    <param name="Local" value="main.html#main.Calculator.display_last">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+    <param name="Keyword" value="equation_clear() （main.Calculator 方法）">
+    <param name="Local" value="main.html#main.Calculator.equation_clear">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+    <param name="Keyword" value="equationGenerateError() （main.Calculator 方法）">
+    <param name="Local" value="main.html#main.Calculator.equationGenerateError">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+    <param name="Keyword" value="getNum() （main.Calculator 方法）">
+    <param name="Local" value="main.html#main.Calculator.getNum">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+    <param name="Keyword" value="getNum_help（main.Calculator 属性）">
+    <param name="Local" value="main.html#main.Calculator.getNum_help">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+    <param name="Keyword" value="main">
+    <param name="See Also" value="main">
+</OBJECT>
+<UL> <LI> <OBJECT type="text/sitemap">
+    <param name="Keyword" value="模块">
+    <param name="Local" value="main.html#module-main">
+</OBJECT>
+</UL><LI> <OBJECT type="text/sitemap">
+    <param name="Keyword" value="result_clear() （main.Calculator 方法）">
+    <param name="Local" value="main.html#main.Calculator.result_clear">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+    <param name="Keyword" value="run() （main.Calculator 方法）">
+    <param name="Local" value="main.html#main.Calculator.run">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+    <param name="Keyword" value="testEquationGenerateError()（在 main 模块中）">
+    <param name="Local" value="main.html#main.testEquationGenerateError">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+    <param name="Keyword" value="模块">
+    <param name="See Also" value="模块">
+</OBJECT>
+<UL> <LI> <OBJECT type="text/sitemap">
+    <param name="Keyword" value="main">
+    <param name="Local" value="main.html#module-main">
+</OBJECT>
+</UL></UL>

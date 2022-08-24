@@ -4,7 +4,6 @@ import pandas as pd
 from pandas import *
 from numpy import *
 from openpyxl import *
-import math
 
 result = []  # 储存本次运行计算结果
 formula = []  # 储存本次运行计算式
@@ -15,10 +14,22 @@ result_last = []
 
 b = False  # 判断是否按下'='，如果是，则清空上一次计算式，如果否，则不清空
 
+test_num = 0  # 全局对象，非常好用
 
-class Calculator:
+
+class Calculator:  # pragma: no cover
+    """计算器类
+
+    实现了有理数基本的加减乘除
+
+    附加实现了ln()、exp()计算
+
+    引入了e、pi两个常数
+
+    """
 
     def __init__(self, master):
+        """初始化计算器和历史显示表格"""
         self.master = master
         self.master.title("Calculator")
         self.master.resizable(0, 0)  # 设置窗口不可拉伸
@@ -128,30 +139,58 @@ class Calculator:
             self.master.insert('', k, values=(result_last[k], formula_last[k]))
 
     def back(self):
+        """回退一位数字、字符或字母"""
         temp_equ = self.equation.get()
         self.equation.set(temp_equ[:-1])  # 一个一个删
 
+    @property
+    def getNum_help(self):
+        """辅助getNum()方法单元测试"""
+        global test_num
+        return test_num
+
+    # arg是每一次的数据
     def getNum(self, arg):
+        """得到使用者点击的按钮对应的值
+
+        当点击“=”时不显示“=”
+
+        点击“log”、“exp”时相当于得到四个字符“log(”、“exp(”
+
+        """
         # 当上一次按下'=' 时，本次先清除上一次的计算式
         global b
+        global test_num
         if b:
             self.equation_clear()
             b = False
+        # 之前的输入式
         temp_equ = self.equation.get()  # 输入算式
         temp_result = self.result.get()
-        arg, temp_equ = self.equtionGenerateError(arg, temp_equ, temp_result)
+        arg, temp_equ = self.equationGenerateError(arg, temp_equ, temp_result)
         temp_equ = temp_equ + arg
+        test_num = temp_equ
         if arg in ['log', 'exp']:  # math.log()和math.exp()的运算需要加括号，右括号使用者会自行补齐
             temp_equ = temp_equ + '('
         self.equation.set(temp_equ)
 
     # 判断基本语法错误
-    def equtionGenerateError(self, arg, temp_equ, temp_result):
-        if (temp_equ == '' or temp_equ == '0') and (arg in ['e', 'π', 'log', 'exp']):  # 第一个输入非数字时被允许的情况
+    def equationGenerateError(self, arg, temp_equ, temp_result):
+        """判断使用者输入的算式是否符合运算规则
+
+        若不符合，则自动令当前点击的值为""
+
+        因为本计算器不支持点乘，同样拒绝类似点乘的运算
+
+        """
+        if temp_equ == '' and arg not in [')', '+', '*', '/', '.']:  # 第一个输入的情况
             pass
-        elif temp_equ == '' or temp_equ == '0' and arg in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '(']:
+        elif temp_equ == '' and arg in [')', '+', '*', '/', '.']:
+            arg = ''
+        elif temp_equ == '0' and arg in ['.', '+', '-', '*', 'exp', 'log', 'π', 'e', '(']:
             pass
-        elif (temp_equ[-1] in ['exp', 'log', 'π', 'e', '.']) and (arg in ['exp', 'log', 'π', 'e', '.']):  # 不符合四则运算的运算符号连接
+        elif (temp_equ[-1] in ['exp', 'log', 'π', 'e', '.']) and (
+                arg in ['exp', 'log', 'π', 'e', '.']):  # 不符合四则运算的运算符号连接
             arg = ''
         elif (temp_equ[-1] in ['+', '-', '*', '÷', '(', '.']) and (arg in ['+', '-', '*', '÷', ')', '.']):
             arg = ''
@@ -174,7 +213,7 @@ class Calculator:
         elif (temp_equ[-1] in ['π', 'e']) and (
                 arg in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'π', 'e']):
             arg = ''
-        elif len(temp_equ) > 1 and temp_equ[-2] == '(' and temp_equ[-1] == '0' and arg != '.':    # '('后不能跟'0'
+        elif len(temp_equ) > 1 and temp_equ[-2] == '(' and temp_equ[-1] == '0' and arg != '.':  # '('后不能跟'0'
             arg = ''
         if arg == '.' and temp_equ.count('.') > 0:  # 一个数之中只能有一个小数点
             i = -1
@@ -199,19 +238,28 @@ class Calculator:
 
     # 计算式和计算结果标签的清零、清空
     def clear(self):
-        self.equation.set('0')
+        """清除表达式和结果"""
+        self.equation.set('')
         self.result.set(' ')
 
     def equation_clear(self):
-        self.equation.set('0')
+        """清除表达式"""
+        self.equation.set('')
 
     def result_clear(self):
+        """清除结果"""
         self.result.set(' ')
 
-    temp_equ = ''
-    answer = ''
-
     def run(self):
+        """计算表达式的结果
+
+        先将表达式转换为电脑可以计算的形式
+
+        再通过eval()函数得到表达式的结果
+
+        再将表达式和结果存入已经存在的表格里，储存历史记录
+
+        """
         global b
         b = True  # 点击'='调用此方法，使得b为True，下次点击按钮通过getNum()方法可以使得计算式标签清零
 
@@ -238,11 +286,12 @@ class Calculator:
             # 将本次记录写入answer.xlsx储存
             df = pd.DataFrame({"结果": result, "计算式": formula})
             df.to_excel(r'.\answer.xlsx')
-        except:  # 其他除0错误，或语法错误返回Error
+        except:  # 任何错误返回Error
             self.result.set(str('Error'))
 
     # 读取answer.xlsx中的历史记录
     def display_last(self):
+        """读取上一次启动程序计算过的所有计算记录"""
         self.workbook = load_workbook(r'.\answer.xlsx')
         sheet1 = self.workbook['Sheet1']
         i = 2
@@ -255,7 +304,73 @@ class Calculator:
             j += 1
 
 
-if __name__ == "__main__":
+def testEquationGenerateError(arg, temp_equ, temp_result, test_result):
+    """ Calculator.equationGenerateError()在类外的重定义
+
+    通过观察可知，该方法除了self.result与外界相关联，其余部分都是对传入方法的参数进行运算，再返回一些值
+
+    为方便测试Calculator.equationGenerateError()方法且不改变它在类中的作用，将其在类外重定义
+
+    增加参数test_result代替self.result：
+    即result在Calculator中的值由test_result模拟，在新方法中对result的操作由test_result代为执行，也将通过test_result查看该方法对result的执行结果
+
+    其他代码均和原方法相同
+
+    """
+    if temp_equ == '' and arg not in [')', '+', '*', '/', '.']:  # 第一个输入的情况
+        pass
+    elif temp_equ == '' and arg in [')', '+', '*', '/', '.']:
+        arg = ''
+    elif temp_equ == '0' and arg in ['.', '+', '-', '*', 'exp', 'log', 'π', 'e', '(']:
+        pass
+    elif (temp_equ[-1] in ['exp', 'log', 'π', 'e', '.']) and (arg in ['exp', 'log', 'π', 'e', '.']):  # 不符合四则运算的运算符号连接
+        arg = ''
+    elif (temp_equ[-1] in ['+', '-', '*', '÷', '(', '.']) and (arg in ['+', '-', '*', '÷', ')', '.']):
+        arg = ''
+    elif temp_equ[-1] == '.' and arg == '(':
+        arg = ''
+    elif temp_equ[-1] == ')' and arg == '.':
+        arg = ''
+    elif temp_equ[-1] == ')' and arg not in ['+', '-', '*', '÷', ')']:  # ')'后目前只能跟'+', '-', '*', '÷', ')'
+        arg = ''
+    elif (arg == ')') and ('(' not in temp_equ):  # 必须有左括号才能输右括号
+        arg = ''
+    elif arg == ')':
+        lbracket_num = temp_equ.count('(')
+        rbracket_num = temp_equ.count(')')
+        if rbracket_num == lbracket_num:  # 左右括号的数量必须相等
+            arg = ''
+    elif (temp_equ[-1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'π', 'e']) and (
+            arg in ['(', 'exp', 'log', 'π', 'e']):  # 不能实现点乘
+        arg = ''
+    elif (temp_equ[-1] in ['π', 'e']) and (
+            arg in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'π', 'e']):
+        arg = ''
+    elif len(temp_equ) > 1 and temp_equ[-2] == '(' and temp_equ[-1] == '0' and arg != '.':  # '('后不能跟'0'
+        arg = ''
+    if arg == '.' and temp_equ.count('.') > 0:  # 一个数之中只能有一个小数点
+        i = -1
+        while True:
+            if temp_equ[i] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
+                i -= 1
+                continue
+            elif temp_equ[i] == '.':
+                arg = ''
+                break
+            else:
+                break
+    if temp_result != ' ':  # 计算器输入前还没有结果，那么结果区域应该设置为空。
+        test_result = ' '  # 原句self.result.set(' ')
+    if temp_equ == '0' and (arg not in ['.', '+', '-', '*', '÷']):  # 如果首次输入为0，则紧跟则不能是数字，只是小数点或运算符
+        temp_equ = ''
+    if len(temp_equ) > 2 and temp_equ[-1] == '0':  # 运算符后面也不能出现0+数字的情形03，09，x
+        if (temp_equ[-2] in ['+', '-', '*', '÷']) and (
+                arg in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '(']):
+            temp_equ = temp_equ[:-1]
+    return arg, temp_equ, test_result
+
+
+if __name__ == "__main__":  # pragma: no cover
     root = Tk()
     my_cal = Calculator(root)
     root.mainloop()
